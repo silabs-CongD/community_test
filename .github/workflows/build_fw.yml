@@ -28,7 +28,7 @@ jobs:
         run: |
           git remote add upstream https://github.com/silabs-CongD/test_build.git
           git fetch upstream
-          git diff --name-only upstream/master HEAD > git_log.txt
+          git diff --name-only upstream/main HEAD > git_log.txt
           grep -v "README.md\\|.github\\|LICENSE\\|templates.xml\\|tools" git_log.txt > git_diff.txt
 
           xargs -I{} -a git_diff.txt find {} -type f -name "*.[ch]" > source_list.txt
