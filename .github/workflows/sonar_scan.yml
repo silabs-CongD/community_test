@@ -16,8 +16,8 @@ jobs:
         id: app-token
         uses: actions/create-github-app-token@v1
         with:
-          app-id: ${{ vars.SILABS_SVC_DEVOPS_GITHUB_APP_ID }}
-          private-key: ${{ secrets.SILABS_SVC_DEVOPS_GITHUB_PRIVATE_KEY }}
+          app-id: ${{ vars.SILABSSW_SVC_DEVOPS_WORKFLOWS_APP_ID }}
+          private-key: ${{ secrets.SILABSSW_SVC_DEVOPS_WORKFLOWS_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
 
       - name: Trigger Workflow
