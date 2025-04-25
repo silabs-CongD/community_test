@@ -12,6 +12,13 @@ jobs:
   check-sonar:
     runs-on: ubuntu-latest
     steps:
+      - name: GH Apps gen token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.SILABS_SVC_DEVOPS_GITHUB_APP_ID }}
+          private-key: ${{ secrets.SILABS_SVC_DEVOPS_GITHUB_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
 
       - name: Trigger Workflow
         id: trigger
@@ -19,7 +26,7 @@ jobs:
 
           response=$(curl -X POST \
             -H "Accept: application/vnd.github.v3+json" \
-            -H "Authorization: token ${{ secrets.PERSONAL_ACCESS_TOKEN }}" \
+            -H "Authorization: token ${{ steps.app-token.outputs.token }}" \
             https://api.github.com/repos/SiliconLabsSoftware/aep_ci_cd/actions/workflows/community_trigger_sonar.yml/dispatches \
             -d '{"ref":"main","inputs":{"repository": "${{ github.event.pull_request.head.user.login }}/${{ github.event.repository.name }}" ,"branch":"${{ github.head_ref }}","pull_request_id":"${{ github.event.pull_request.number }}","commit_sha":"${{ github.event.pull_request.head.sha }}" }}')
 
@@ -37,7 +44,7 @@ jobs:
           sleep 3
           run_id=$(curl -s \
             -H "Accept: application/vnd.github.v3+json" \
-            -H "Authorization: token ${{ secrets.PERSONAL_ACCESS_TOKEN }}" \
+            -H "Authorization: token ${{ steps.app-token.outputs.token }}" \
             https://api.github.com/repos/SiliconLabsSoftware/aep_ci_cd/actions/runs \
             | jq '.workflow_runs[] | select(.name=="Trigger_Sonar") | .id' | head -n 1)
           echo "Run ID: https://github.com/SiliconLabsSoftware/aep_ci_cd/actions/runs/$run_id"
@@ -54,13 +61,13 @@ jobs:
             ##########################################
             status=$(curl -s \
               -H "Accept: application/vnd.github.v3+json" \
-              -H "Authorization: token ${{ secrets.PERSONAL_ACCESS_TOKEN }}" \
+              -H "Authorization: token ${{ steps.app-token.outputs.token }}" \
               https://api.github.com/repos/SiliconLabsSoftware/aep_ci_cd/actions/runs/$run_id \
               | jq -r '.status')
 
             conclusion=$(curl -s \
               -H "Accept: application/vnd.github.v3+json" \
-              -H "Authorization: token ${{ secrets.PERSONAL_ACCESS_TOKEN }}" \
+              -H "Authorization: token ${{ steps.app-token.outputs.token }}" \
               https://api.github.com/repos/SiliconLabsSoftware/aep_ci_cd/actions/runs/$run_id \
               | jq -r '.conclusion')
 
