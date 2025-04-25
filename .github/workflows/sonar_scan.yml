@@ -1,9 +1,9 @@
 name: SonarQube-Check
 on:
-  # pull_request_target:
-  #   types: [opened, synchronize, edited]
+  pull_request_target:
+    types: [opened, synchronize, edited]
 
-  workflow_dispatch:
+  # workflow_dispatch:
 
 env:
   GH_PAGE_ROOT_URL: https://studious-adventure-mrynnzo.pages.github.io
